@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+data-raw/Spss.zip
+data-raw/Spss/*
