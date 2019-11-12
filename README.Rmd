@@ -1,0 +1,85 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# nhts2017
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of `nhts2017` is to make it considerably easier for R users to 
+interact with NHTS 2017 datasets. The package contains the four datasets:
+
+  - `nhts_households`
+  - `nhts_persons`
+  - `nhts_vehicles`
+  - `nhts_trips`
+  
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("byu-transpolab/nhts2017")
+```
+
+## Example
+
+Each of the datasets is a properly data-typed `tibble`, derived from the 
+`SPSS` files distributed by [Oak Ridge National Laboratory](https://nhts.ornl.gov/).
+The variables have attribute labels that appear in RStudio's data set viewer,
+and factor variables have correct labels appended.
+
+For instance, to count the number of households completing records for each day,
+we can simply do
+
+```{r example}
+library(nhts2017)
+library(tidyverse)
+
+nhts_households %>%
+  group_by(travday) %>%
+  summarise(
+    count = n(),
+    weighted = sum(wthhfin)
+  )
+```
+
+
+In one departure from the NHTS public data files, the datasets are `tidy` in that
+each field appears only once in the dataset. E.g., the `msasize` variable
+ --- indicating the size of the metropolitan area each household resides in ---
+is only appended to the `nhts_households` tibble rather than to all four tibbles.
+Joining is trivial, however.
+
+```{r joinexample}
+nhts_trips %>%
+  left_join(nhts_households, by = "houseid") %>%
+  group_by(msasize) %>%
+  summarise(
+    mean_trip_length = weighted.mean(trpmiles, wttrdfin)
+  )
+```
+
+Additionally, the `strttime` and `endtime` fields on the trips data have been
+converted from four-character strings (e.g. `1310` for 1:10 PM) into R `datetime`
+objects. This required setting a date, which was arbitrarily chosen to be October
+10, 2017.
+
+```{r strttime}
+ggplot(nhts_trips, aes(x = strttime)) + 
+  geom_histogram()
+```
+
