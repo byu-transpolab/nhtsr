@@ -3,6 +3,6 @@
 #' The datasets in this package are tidy tibbles with proper factors and definitions
 #' encoded.
 #'
-#' @docType pakcage
+#' @docType package
 #' @name nhts2017
 NULL
