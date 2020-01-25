@@ -27,10 +27,6 @@ build_activities <- function(trips) {
       activity = ifelse(event == "depart", whyfrom, whyto)
     )
 
-  # create a unique id for the first departure
-  start_trip <- events %>%
-    slice(1) %>%
-    mutate(activity = paste(activity, "H", sep = "-"))
 
   first_activity <- events %>%
     # take the starting point of each person
@@ -56,45 +52,14 @@ build_activities <- function(trips) {
     arrange(time, .by_group = TRUE) %>%
     select(houseid, personid, time, event, activity) %>%
 
-
+# it is not quite working yet because arrive at 01 at 4:00am is the same as arrive at 01 at
+# 3:30 pm and it confuses spread(). I have tried renaming to "start" and "finish" or 01-H...
     spread(event, time) %>%
     arrange(arrive, .by_group = TRUE)
 
-  # spread back into activities
 
 }
 
 
 
-# Nate's attempt to build activities
 
-nhts_trips %>%
-  # keep it small and only look at the first household
-  filter(houseid == 	30000007) %>%
-  select(houseid, personid, whyfrom, whyto, strttime, endtime) %>%
-  group_by(personid) %>%
-  add_row(whyfrom = lag(whyto))
-
-  mutate(activity = lag(whyto),
-         act_strt = lag(endtime),
-         act_end = strttime)
-
-
-
-
-
-
-
-# stack overflow help
-#input
-tibble(ID = 1:5,
-       Value = 21:25)
-
-#output
-tibble(ID = c(1:5, "NA"),
-       Value = c(21:25, "NA"),
-       shift.key = c("NA", 21:25))
-
-## experiment with rearranging activity...
-events %>%
-  mutate(activity = ifelse())
