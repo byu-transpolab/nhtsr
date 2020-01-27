@@ -33,24 +33,19 @@ build_activities <- function(trips) {
     slice(1) %>%
     # creates a starting time for each person at 4:00:00 am
     transmute(activity = as.character(whyfrom) %>%
-                # attach an H to make sense that arrive at 01 is returning home (helps with the
-                # spread() function)
-                paste("H", sep = "-"),
+                # attach an S to signify "start" of day (helps with the spread() function)
+                paste("S", sep = "-"),
               time = as_datetime("2017-10-10 4:00:00"),
-              event = "start")
+              event = "arrive")
 
   last_activity <- events %>%
     slice(1) %>%
-    transmute(activity = as.character(whyfrom) %>%
-                # attach an H to make sense that arrive at 01 is returning home (helps with the
-                # spread() function)
-                paste("H", sep = "-"),
+    transmute(activity = as.character(whyfrom),
               time = as_datetime("2017-10-11 4:00:00"),
-              event = "finish")
+              event = "depart")
 
-  events %>% full_join(first_activity) %>% full_join(last_activity) %>%
-    arrange(time, .by_group = TRUE) %>%
-    select(houseid, personid, time, event, activity) %>%
+  activity_long <- events %>% full_join(first_activity) %>% full_join(last_activity) %>%
+    arrange(time, .by_group = TRUE)
 
 # it is not quite working yet because arrive at 01 at 4:00am is the same as arrive at 01 at
 # 3:30 pm and it confuses spread(). I have tried renaming to "start" and "finish" or 01-H...
@@ -61,5 +56,13 @@ build_activities <- function(trips) {
 }
 
 
+# make two data frames, then join on id and activity
+# arrival table
+arrival <- activity_long %>%
+  filter(event == "arrive")
 
+# departure table
+departure <- activity_long %>%
+  filter(event == "depart")
 
+arrival %>% left_join(departure, by = "personid")
