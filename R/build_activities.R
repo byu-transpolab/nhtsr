@@ -44,25 +44,13 @@ build_activities <- function(trips) {
               event = "depart")
 
   # combine events with first and last activity
-  activity_long <- events %>% full_join(first_activity) %>% full_join(last_activity) %>%
+events %>% full_join(first_activity) %>% full_join(last_activity) %>%
     arrange(time, .by_group = TRUE) %>%
-    select(-whyfrom, -whyto, -strtend)
-
-  # make two data frames (split arrival from departure), then join on id and activity
-  # arrival table
-  arrival <- activity_long %>%
-    filter(event == "arrive") %>%
-    mutate(arrive_time = time) %>%
-    select(-time, -event)
-
-  # departure table
-  departure <- activity_long %>%
-    filter(event == "depart") %>%
-    mutate(depart_time = time) %>%
-    select(-time, -event)
-
-  # join the tables
-  arrival %>% left_join(departure, by = c("houseid", "personid"))
+    select(-whyfrom, -whyto, -strtend) %>%
+    group_by(houseid, personid, event) %>%
+    mutate(number = as.integer(factor(time))) %>%
+    spread(event, time) %>%
+    arrange(arrive, .by_group = TRUE)
 
 }
 
