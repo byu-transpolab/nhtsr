@@ -10,14 +10,14 @@ library(nhts2017)
 library(lubridate)
 
 
+# Necessary fields include houseid, personid, strttime, endtime, whyfrom, whyto
+
 build_activities <- function(trips) {
 
-  events <- nhts_trips %>%
-    # keep only necessary activity fields
+  # create list of events labeled arrive or depart
+  events <- trips %>%
+    # exlude all other trip attributes
     select(houseid, personid, strttime, endtime, whyfrom, whyto) %>%
-    # simplified to only the first household of three persons
-    filter(houseid == 	30000007) %>%
-
     # gather times
     gather(strtend, time, strttime, endtime) %>%
     group_by(houseid, personid) %>%
@@ -44,17 +44,15 @@ build_activities <- function(trips) {
               event = "depart")
 
   # combine events with first and last activity
+  # spread by either arrive or depart
 events %>% full_join(first_activity) %>% full_join(last_activity) %>%
     arrange(time, .by_group = TRUE) %>%
     select(-whyfrom, -whyto, -strtend) %>%
     group_by(houseid, personid, event) %>%
-    mutate(number = as.integer(factor(time))) %>%
+    mutate(activity_number = as.integer(factor(time))) %>%
     spread(event, time) %>%
     arrange(arrive, .by_group = TRUE)
 
 }
-
-
-
 
 
