@@ -38,8 +38,8 @@ build_activities <- function(trips) {
               event = "arrive")
 
   last_activity <- events %>%
-    slice(1) %>%
-    transmute(activity = as.character(whyfrom),
+    slice(n()) %>%
+    transmute(activity = as.character(whyto),
               time = as_datetime("2017-10-11 4:00:00"),
               event = "depart")
 
