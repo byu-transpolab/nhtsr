@@ -55,4 +55,44 @@ events %>% full_join(first_activity) %>% full_join(last_activity) %>%
 
 }
 
+# This function takes the activities list and numbers and classifies the tours each
+# person takes during the day
 
+build_tours <- function(activities) {
+
+  # create columns for tour count
+  activity_list <- activities %>%
+    mutate(
+      home_status = ifelse(activity == "01", 1, 0),
+      tour_count = cumsum(home_status),
+      # this goes in mutate to make home activites not a part of a tour
+      tour_count = ifelse(home_status, NA, tour_count)
+    ) %>%
+    # no longer need home_status
+    select(-home_status)
+
+  # create the tour classification
+  # create column of each classification.
+  # outputs list of tours (not activities)
+  tour_list <- activity_list %>%
+    group_by(houseid, personid, tour_count) %>%
+    summarise(tour_list = paste(activity, collapse = " ")) %>%
+    mutate(tour_class = case_when(
+      str_detect(tour_list, "03") == T ~ "W",
+      str_detect(tour_list, "04") == T ~ "W",
+      # I don't know if school or work will take priority
+      str_detect(tour_list, "08") == T ~ "S",
+      str_detect(tour_list, "01") == T ~ "home",
+      TRUE ~ "NM"
+    )) %>%
+    # filter out the tours that are "home" because technically they aren't even tours.
+    filter(tour_class != "home")
+
+  # join back onto activites to create the classification column
+  activity_list %>%
+    left_join(tour_list, by = c("houseid", "personid", "tour_count")) %>%
+    # eliminate tour_list
+    select(-tour_list)
+
+
+}
