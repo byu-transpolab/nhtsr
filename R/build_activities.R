@@ -57,8 +57,9 @@ events %>% full_join(first_activity) %>% full_join(last_activity) %>%
 
 # This function takes the activities list and numbers and classifies the tours each
 # person takes during the day
+# output is a list of activities with a tour classification column
 
-build_tours <- function(activities) {
+add_tours <- function(activities) {
 
   # create columns for tour count
   activity_list <- activities %>%
@@ -80,7 +81,6 @@ build_tours <- function(activities) {
     mutate(tour_class = case_when(
       str_detect(tour_list, "03") == T ~ "W",
       str_detect(tour_list, "04") == T ~ "W",
-      # I don't know if school or work will take priority
       str_detect(tour_list, "08") == T ~ "S",
       str_detect(tour_list, "01") == T ~ "home",
       TRUE ~ "NM"
