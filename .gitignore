@@ -4,4 +4,4 @@
 .Ruserdata
 
 data-raw/Spss.zip
-data-raw/Spss/*
+data-raw/*.sav
