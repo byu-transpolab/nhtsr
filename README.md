@@ -16,6 +16,22 @@ datasets:
   - `nhts_vehicles`
   - `nhts_trips`
 
+### Citation:
+
+From ORNL website:
+
+> To recognize the valuable role of National Household Travel Survey
+> (NHTS) data in the transportation research process and to facilitate
+> repeatability of the research, users of NHTS data are asked to
+> formally acknowledge the data source. Where possible, this
+> acknowledgment should take place in the form of a formal citation,
+> such as when writing a research report, planning document, on-line
+> article, and other publications. The citation can be formatted as
+> follows:
+
+    U.S. Department of Transportation, Federal Highway Administration, 2017
+    National Household Travel Survey. URL: http://nhts.ornl.gov.
+
 ## Installation
 
 You can install the development version from
@@ -40,14 +56,16 @@ each day, we can simply do
 ``` r
 library(nhts2017)
 library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
-#> ✔ ggplot2 3.2.0     ✔ purrr   0.3.2
-#> ✔ tibble  2.1.3     ✔ dplyr   0.8.3
-#> ✔ tidyr   0.8.3     ✔ stringr 1.4.0
-#> ✔ readr   1.3.1     ✔ forcats 0.4.0
-#> ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-#> ✖ dplyr::filter() masks stats::filter()
-#> ✖ dplyr::lag()    masks stats::lag()
+#> ── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+#> ✓ ggplot2 3.3.2.9000     ✓ purrr   0.3.4     
+#> ✓ tibble  3.0.3          ✓ dplyr   1.0.0     
+#> ✓ tidyr   1.1.0          ✓ stringr 1.4.0     
+#> ✓ readr   1.3.1          ✓ forcats 0.5.0
+#> Warning: package 'tibble' was built under R version 4.0.2
+#> Warning: package 'dplyr' was built under R version 4.0.2
+#> ── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> x dplyr::filter() masks stats::filter()
+#> x dplyr::lag()    masks stats::lag()
 
 nhts_households %>%
   group_by(travday) %>%
@@ -55,6 +73,7 @@ nhts_households %>%
     count = n(),
     weighted = sum(wthhfin)
   )
+#> `summarise()` ungrouping output (override with `.groups` argument)
 #> # A tibble: 7 x 3
 #>   travday        count  weighted
 #>   <chr+lbl>      <int>     <dbl>
@@ -80,6 +99,7 @@ nhts_trips %>%
   summarise(
     mean_trip_length = weighted.mean(trpmiles, wttrdfin)
   )
+#> `summarise()` ungrouping output (override with `.groups` argument)
 #> # A tibble: 6 x 2
 #>   msasize                                         mean_trip_length
 #>   <chr+lbl>                                                  <dbl>

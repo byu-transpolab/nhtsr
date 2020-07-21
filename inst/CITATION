@@ -1,0 +1,13 @@
+citHeader("To cite the National Household Travel Survey in publications use:")
+
+citEntry(entry = "misc",
+  title        = "2017 National Household Travel Survey",
+  author       = "U.S. Department of Transportation, Federal Highway Administration",
+  year         = "2017",
+  URL          = "http://nhts.ornl.gov",
+
+  textVersion  =
+  paste("U.S. Department of Transportation, Federal Highway Administration",
+        "2017 National Household Travel Survey.",
+        "URL: http://nhts.ornl.gov.")
+)
