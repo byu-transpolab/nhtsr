@@ -49,7 +49,8 @@ nhts_trips <- tr_raw %>%
   mutate(
     tdtrpnum = as.numeric(tdtrpnum),
     strttime = clock_to_time(strttime),
-    endtime = clock_to_time(endtime)
+    endtime = clock_to_time(endtime),
+    gasprice = as.numeric(gasprice)
   )
 
 
@@ -57,4 +58,4 @@ nhts_trips <- tr_raw %>%
 usethis::use_data(nhts_households)
 usethis::use_data(nhts_persons)
 usethis::use_data(nhts_vehicles)
-usethis::use_data(nhts_trips)
+usethis::use_data(nhts_trips, overwrite = TRUE)
