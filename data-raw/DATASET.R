@@ -1,16 +1,16 @@
 library(tidyverse)
 # Start by downloading and unzipping the SPSS version of the NHTS public files.
-# https://nhts.ornl.gov/assets/2016/download/Spss.zip
-
+system2("wget", args = c("https://nhts.ornl.gov/assets/2016/download/Spss.zip", "data-raw/Spss.zip"))
+system2("7z", args = c("x", "data-raw/Spss.zip", "-odata-raw"))
 
 ## Prepare `nhts_households` ============================
-hh_raw <- haven::read_spss("data-raw/Spss/hhpub.sav")
+hh_raw <- haven::read_spss("data-raw/hhpub.sav")
 hh_vars <- names(hh_raw)
 
 nhts_households <- hh_raw
 
 ## Prepare `nhts_persons` dataset goes here ============================
-pp_raw <- haven::read_spss("data-raw/Spss/perpub.sav")
+pp_raw <- haven::read_spss("data-raw/perpub.sav")
 
 # Tidy data suggests not keeping redundant variables
 pp_vars <- names(pp_raw)
@@ -18,7 +18,7 @@ nhts_persons <- pp_raw %>%
   select(pp_vars[!(pp_vars %in% hh_vars[-1])])
 
 ## Prepare `nhts_vehicles` ============================
-vh_raw <- haven::read_spss("data-raw/Spss/vehpub.sav")
+vh_raw <- haven::read_spss("data-raw/vehpub.sav")
 
 # Tidy data suggests not keeping redundant variables
 vh_vars <- names(vh_raw)
@@ -26,7 +26,7 @@ nhts_vehicles <- vh_raw %>%
   select(vh_vars[!(vh_vars %in% hh_vars[-1])])
 
 ## Prepare `nhts_trips` ============================
-tr_raw <- haven::read_spss("data-raw/Spss/trippub.sav")
+tr_raw <- haven::read_spss("data-raw/trippub.sav")
 
 #' Change the time from a four-digit character string to a real datetime
 #' object.
