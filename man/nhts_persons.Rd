@@ -4,7 +4,8 @@
 \name{nhts_persons}
 \alias{nhts_persons}
 \title{Public Person Records}
-\format{A `tibble` with 264,234 rows and 87 variables:
+\format{
+A `tibble` with 264,234 rows and 87 variables:
   - `houseid`: Household Identifier
   - `personid`: Person Identifier
   - `r_age`: Age
@@ -91,7 +92,8 @@
   - `condpub`: Medical Condition Results in Using Bus or Subway Less Frequently
   - `condspec`: Medical Condition Results in Using Special Transportation Services
   - `condtax`: Medical Condition Results in Using a Reduced Fare Taxi
-  - `wtperfin`: Final Person weight}
+  - `wtperfin`: Final Person weight
+}
 \usage{
 nhts_persons
 }

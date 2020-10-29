@@ -4,7 +4,8 @@
 \name{nhts_households}
 \alias{nhts_households}
 \title{Public Household Records}
-\format{A `tibble` with 129,696 rows and 58 variables:
+\format{
+A `tibble` with 129,696 rows and 58 variables:
   - `houseid`: Household Identifier
   - `travday`: Travel day - day of week
   - `sampstrat`: Primary Sampling Stratum Assignment
@@ -62,7 +63,8 @@
   - `hteempdn`: Category of workers per square mile in the census tract of the household's home location.
   - `hbhtnrnt`: Category of the percent of renter-occupied housing in the census block group of the household's home location.
   - `hbppopdn`: Category of population density (persons per square mile) in the census block group of the household's home location.
-  - `hbresdn`: Category of housing units per square mile in the census block group of the household's home location.}
+  - `hbresdn`: Category of housing units per square mile in the census block group of the household's home location.
+}
 \usage{
 nhts_households
 }

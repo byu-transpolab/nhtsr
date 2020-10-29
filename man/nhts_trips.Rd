@@ -4,7 +4,8 @@
 \name{nhts_trips}
 \alias{nhts_trips}
 \title{Public Trip Records}
-\format{A `tibble` with N rows and K variables:
+\format{
+A `tibble` with N rows and K variables:
   - `houseid`: Household Identifier
   - `personid`: Person Identifier
   - `trvlcmin`: Trip Duration in Minutes
@@ -63,7 +64,8 @@
   - `whyto`: Trip Destination Purpose
   - `gasprice`: Price of gasoline, in cents, on respondent's travel day
   - `wttrdfin`: Final trip weight
-  - `whytrp90`: Travel day trip purpose consistent with 1990 NPTS design.}
+  - `whytrp90`: Travel day trip purpose consistent with 1990 NPTS design.
+}
 \usage{
 nhts_trips
 }

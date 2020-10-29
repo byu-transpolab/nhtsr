@@ -4,7 +4,8 @@
 \name{nhts_vehicles}
 \alias{nhts_vehicles}
 \title{Public Vehicle Records}
-\format{A `tibble` with 256,115 rows and 20 variables:
+\format{
+A `tibble` with 256,115 rows and 20 variables:
   - `houseid` :Household Identifier
   - `vehid` :Vehicle Identifier
   - `vehyear` :Vehicle Year
@@ -24,7 +25,8 @@
   - `bestmile` :Best estimate of annual miles
   - `best_flg` :How BESTMILE was computed
   - `best_edt` :Flag any edits/adjustments to BESTMILE
-  - `best_out` :Flag identifying BESTMILE outlier values}
+  - `best_out` :Flag identifying BESTMILE outlier values
+}
 \usage{
 nhts_vehicles
 }
