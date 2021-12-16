@@ -196,7 +196,7 @@
 #'
 #' A dataset containing trip records for
 #'
-#' @format A `tibble` with N rows and K variables:
+#' @format A `tibble` with 923,572 rows and 82 variables:
 #'   - `houseid`: Household Identifier
 #'   - `personid`: Person Identifier
 #'   - `trvlcmin`: Trip Duration in Minutes
