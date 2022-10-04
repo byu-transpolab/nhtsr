@@ -1,7 +1,7 @@
 Package: nhts2017
 Type: Package
 Title: National Household Travel Survey 2017 Data
-Version: 0.1.0
+Version: 0.1.9000
 Authors@R: person("Gregory", "Macfarlane", email = "gregmacfarlane@gmail.com",
                   role = c("aut", "cre"))
 Maintainer: The package maintainer <yourself@somewhere.net>
@@ -12,7 +12,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
 Depends: 
-    R (>= 4.10)
+    R (>= 4.2)
 Imports: 
     dplyr,
     lubridate,
