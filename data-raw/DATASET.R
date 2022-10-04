@@ -1,7 +1,7 @@
 library(tidyverse)
-# Start by downloading and unzipping the SPSS version of the NHTS public files.
-#system2("wget", args = c("https://nhts.ornl.gov/assets/2016/download/Spss.zip"))
-#system2("7z", args = c("x", "data-raw/Spss.zip", "-odata-raw"))
+# Start by downloading and unzipping the SPSS version of the NHTS public files. Need to have wget and 7z on your system.
+#' system2("wget", args = c("https://nhts.ornl.gov/assets/2016/download/Spss.zip"))
+#' system2("7z", args = c("x", "data-raw/Spss.zip", "-odata-raw"))
 
 ## Prepare `nhts_households` ============================
 hh_raw <- haven::read_spss("data-raw/hhpub.sav")
@@ -15,7 +15,7 @@ names(pp_raw) <- tolower(names(pp_raw))
 
 # Tidy data suggests not keeping redundant variables
 pp_vars <- names(pp_raw)
-nhts_persons <- pp_raw %>%
+nhts_persons <- pp_raw |>
   select(pp_vars[!(pp_vars %in% hh_vars[-1])])
 
 ## Prepare `nhts_vehicles` ============================
@@ -24,7 +24,7 @@ names(vh_raw) <- tolower(names(vh_raw))
 
 # Tidy data suggests not keeping redundant variables
 vh_vars <- names(vh_raw)
-nhts_vehicles <- vh_raw %>%
+nhts_vehicles <- vh_raw |>
   select(vh_vars[!(vh_vars %in% hh_vars[-1])])
 
 ## Prepare `nhts_trips` ============================
@@ -45,10 +45,10 @@ clock_to_time <- function(clock, date = "2017-10-10"){
 }
 
 
-nhts_trips <- tr_raw %>%
+nhts_trips <- tr_raw |>
   # Tidy data suggests not keeping redundant variables
-  select(tr_vars[!(tr_vars %in% hh_vars[-1])], travday) %>%
-  select(houseid, tr_vars[!(tr_vars %in% pp_vars[-2])], travday) %>%
+  select(tr_vars[!(tr_vars %in% hh_vars[-1])], travday) |>
+  select(houseid, tr_vars[!(tr_vars %in% pp_vars[-2])], travday) |>
   mutate(
     date = case_when(
       travday == "01" ~ "2017-10-15",
