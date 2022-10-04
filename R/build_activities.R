@@ -40,7 +40,9 @@ build_activities <- function(trips) {
     dplyr::arrange(time, .by_group = TRUE) %>%
     dplyr::mutate(
       event = ifelse(strtend == "strttime", "depart", "arrive"),
-      activity = ifelse(event == "depart", whyfrom, whyto)
+      activity = ifelse(event == "depart", whyfrom, whyto),
+      # get the date of the first activity
+      date = lubridate::as_date(time)[1]
     )
 
 
@@ -51,7 +53,7 @@ build_activities <- function(trips) {
     # creates a starting time for each person at 4:00:00 am
     dplyr::transmute(
       activity = as.character(whyfrom),
-      time = lubridate::as_datetime("2017-10-10 4:00:00"),
+      time = lubridate::as_datetime(str_c(date, "04:00:00")),
       event = "arrive"
     )
 
@@ -60,13 +62,14 @@ build_activities <- function(trips) {
     dplyr::slice(n()) %>%
     dplyr::transmute(
       activity = as.character(whyto),
-      time = lubridate::as_datetime("2017-10-11 4:00:00"),
+      time = lubridate::as_datetime(str_c(date + 1, "04:00:00")),
       event = "depart"
     )
 
   # combine events with first and last activity
   # spread by either arrive or depart
   events %>%
+    dplyr::select(-date) %>%
     dplyr::full_join(first_activity) %>%
     dplyr::full_join(last_activity) %>%
     dplyr::arrange(time, .by_group = TRUE) %>%
