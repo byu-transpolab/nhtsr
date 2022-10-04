@@ -29,15 +29,15 @@
 build_activities <- function(trips) {
 
   # create list of events labeled arrive or depart
-  events <- trips %>%
+  events <- trips |>
     # exlude all other trip attributes
-    dplyr::select(houseid, personid, strttime, endtime, whyfrom, whyto) %>%
+    dplyr::select(houseid, personid, strttime, endtime, whyfrom, whyto) |>
     # gather times
-    tidyr::gather(strtend, time, strttime, endtime) %>%
-    dplyr::group_by(houseid, personid) %>%
+    tidyr::gather(strtend, time, strttime, endtime) |>
+    dplyr::group_by(houseid, personid) |>
     # there have been errors where a time stamp is wrongly labeled and
     # wrongly arranged here...and again on line 57
-    dplyr::arrange(time, .by_group = TRUE) %>%
+    dplyr::arrange(time, .by_group = TRUE) |>
     dplyr::mutate(
       event = ifelse(strtend == "strttime", "depart", "arrive"),
       activity = ifelse(event == "depart", whyfrom, whyto),
@@ -47,9 +47,9 @@ build_activities <- function(trips) {
 
 
   # create the first activity for each person with a start time at 4 AM
-  first_activity <- events %>%
+  first_activity <- events |>
     # take the starting point of each person
-    dplyr::slice(1) %>%
+    dplyr::slice(1) |>
     # creates a starting time for each person at 4:00:00 am
     dplyr::transmute(
       activity = as.character(whyfrom),
@@ -58,8 +58,8 @@ build_activities <- function(trips) {
     )
 
   # create the last activity for each person with an end time of 4AM the next day
-  last_activity <- events %>%
-    dplyr::slice(n()) %>%
+  last_activity <- events |>
+    dplyr::slice(n()) |>
     dplyr::transmute(
       activity = as.character(whyto),
       time = lubridate::as_datetime(str_c(date + 1, "04:00:00")),
@@ -68,15 +68,15 @@ build_activities <- function(trips) {
 
   # combine events with first and last activity
   # spread by either arrive or depart
-  events %>%
-    dplyr::select(-date) %>%
-    dplyr::full_join(first_activity) %>%
-    dplyr::full_join(last_activity) %>%
-    dplyr::arrange(time, .by_group = TRUE) %>%
-    dplyr::select(-whyfrom, -whyto, -strtend) %>%
-    dplyr::group_by(houseid, personid, event) %>%
-    dplyr::mutate(activity_number = as.integer(factor(time))) %>%
-    tidyr::spread(event, time) %>%
+  events |>
+    dplyr::select(-date) |>
+    dplyr::full_join(first_activity) |>
+    dplyr::full_join(last_activity) |>
+    dplyr::arrange(time, .by_group = TRUE) |>
+    dplyr::select(-whyfrom, -whyto, -strtend) |>
+    dplyr::group_by(houseid, personid, event) |>
+    dplyr::mutate(activity_number = as.integer(factor(time))) |>
+    tidyr::spread(event, time) |>
     dplyr::arrange(arrive, .by_group = TRUE)
 
 

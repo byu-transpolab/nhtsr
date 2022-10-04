@@ -12,10 +12,10 @@
 build_tours <- function(activities){
 
   # adds column that starts counting tours
-  mytour_count <- activities %>%
+  mytour_count <- activities |>
     # eliminate unnecessary columns
-    dplyr::select(houseid, personid, activity, activity_number, arrive, depart) %>%
-    dplyr::group_by(houseid, personid) %>%
+    dplyr::select(houseid, personid, activity, activity_number, arrive, depart) |>
+    dplyr::group_by(houseid, personid) |>
     # set a home status to create a cumulative count
     dplyr::mutate(
       home_status = ifelse(activity == "01", 1, 0),
@@ -25,10 +25,10 @@ build_tours <- function(activities){
     )
 
   # collapse tours into persons with DAPs
-  dap_class <- mytour_count %>%
+  dap_class <- mytour_count |>
     # include group_by tour_count so the list is by tours not persons
-    dplyr::group_by(houseid, personid, tour_count) %>%
-    dplyr::summarise(tour_list = paste(activity, collapse = " ")) %>%
+    dplyr::group_by(houseid, personid, tour_count) |>
+    dplyr::summarise(tour_list = paste(activity, collapse = " ")) |>
     dplyr::mutate(tour_class = case_when(
       stringr::str_detect(tour_list, "03") == T ~ "W",
       stringr::str_detect(tour_list, "04") == T ~ "W",
@@ -36,14 +36,14 @@ build_tours <- function(activities){
       stringr::str_detect(tour_list, "01") == T ~ "home",
       stringr::str_detect(tour_list, "NA") == T ~ "H",
       TRUE ~ "NM"
-    )) %>%
+    )) |>
     # filter out the tours that are "home" because technically they aren't even tours.
     dplyr::filter(tour_class != "home"
            # when tour_count = 0, the person started at somewhere other than home
 
-    ) %>%
+    ) |>
     # collapse by tour_class add column for w1 and w2
-    dplyr::summarise(tours_row = paste(tour_class, collapse = "-")) %>%
+    dplyr::summarise(tours_row = paste(tour_class, collapse = "-")) |>
     dplyr::mutate(
       DAP_sub = dplyr::case_when(
         stringr::str_detect(tours_row, "W-W") == T ~ "W_2",
@@ -63,11 +63,11 @@ build_tours <- function(activities){
 
   ## ======================================================================
   # joins persons with activities lists (tours) with the daps created
-  mytour_count %>%
+  mytour_count |>
     # collapse the activities into the day_plan column
-    dplyr::group_by(houseid, personid) %>%
-    dplyr::summarise(tour_list = paste(activity, collapse = " ")) %>%
-    dplyr::left_join(dap_class, by = c("houseid", "personid")) %>%
+    dplyr::group_by(houseid, personid) |>
+    dplyr::summarise(tour_list = paste(activity, collapse = " ")) |>
+    dplyr::left_join(dap_class, by = c("houseid", "personid")) |>
     dplyr::mutate(DAP_sub = ifelse(is.na(DAP_sub), "H", DAP_sub),
            DAP = ifelse(is.na(DAP), "H", DAP))
 }
