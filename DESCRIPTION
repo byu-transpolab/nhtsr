@@ -1,12 +1,11 @@
-Package: nhts2017
+Package: nhtsr
 Type: Package
-Title: National Household Travel Survey 2017 Data
-Version: 0.1.9000
+Title: National Household Travel Survey Data
+Version: 0.2.9000
 Authors@R: person("Gregory", "Macfarlane", email = "gregmacfarlane@gmail.com",
                   role = c("aut", "cre"))
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Includes data for the 2022 and 2017 NHTS datasets in easily proccessed formats.
 License: CC0
 Encoding: UTF-8
 LazyData: true

@@ -1,20 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nhts2017
+# nhtsr
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-The goal of `nhts2017` is to make it considerably easier for R users to
-interact with NHTS 2017 datasets. The package contains the four
+The goal of `nhtsr` is to make it considerably easier for R users to
+interact with NHTS 2017 and 2022 datasets. The package contains eight
 datasets:
 
-  - `nhts_households`
-  - `nhts_persons`
-  - `nhts_vehicles`
-  - `nhts_trips`
+- `nhts_households` and `nhts22_households`
+- `nhts_persons` and `nhts22_persons`
+- `nhts_vehicles` and `nhts22_vehicles`
+- `nhts_trips` and `nhts22_trips`
 
 ### Citation:
 
@@ -29,7 +28,7 @@ From ORNL website:
 > article, and other publications. The citation can be formatted as
 > follows:
 
-    U.S. Department of Transportation, Federal Highway Administration, 2017
+    U.S. Department of Transportation, Federal Highway Administration, 2022
     National Household Travel Survey. URL: http://nhts.ornl.gov.
 
 ## Installation
@@ -54,18 +53,19 @@ For instance, to count the number of households completing records for
 each day, we can simply do
 
 ``` r
-library(nhts2017)
+library(nhtsr)
+library(haven)
 library(tidyverse)
-#> ── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-#> ✓ ggplot2 3.3.2.9000     ✓ purrr   0.3.4     
-#> ✓ tibble  3.0.3          ✓ dplyr   1.0.0     
-#> ✓ tidyr   1.1.0          ✓ stringr 1.4.0     
-#> ✓ readr   1.3.1          ✓ forcats 0.5.0
-#> Warning: package 'tibble' was built under R version 4.0.2
-#> Warning: package 'dplyr' was built under R version 4.0.2
-#> ── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
+#> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+#> ✔ dplyr     1.1.4     ✔ readr     2.1.4
+#> ✔ forcats   1.0.0     ✔ stringr   1.5.1
+#> ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+#> ✔ lubridate 1.9.2     ✔ tidyr     1.3.1
+#> ✔ purrr     1.0.2     
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
+#> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 nhts_households %>%
   group_by(travday) %>%
@@ -73,8 +73,7 @@ nhts_households %>%
     count = n(),
     weighted = sum(wthhfin)
   )
-#> `summarise()` ungrouping output (override with `.groups` argument)
-#> # A tibble: 7 x 3
+#> # A tibble: 7 × 3
 #>   travday        count  weighted
 #>   <chr+lbl>      <int>     <dbl>
 #> 1 01 [Sunday]    14479 16886890.
@@ -93,28 +92,28 @@ household resides in — is only appended to the `nhts_households` tibble
 rather than to all four tibbles. Joining is trivial, however.
 
 ``` r
-nhts_trips %>%
-  left_join(nhts_households, by = "houseid") %>%
-  group_by(msasize) %>%
+nhts22_trips |> 
+  left_join(nhts22_households, by = "houseid") |> 
+  group_by(msasize) |> 
   summarise(
     mean_trip_length = weighted.mean(trpmiles, wttrdfin)
   )
-#> `summarise()` ungrouping output (override with `.groups` argument)
-#> # A tibble: 6 x 2
+#> # A tibble: 6 × 2
 #>   msasize                                         mean_trip_length
 #>   <chr+lbl>                                                  <dbl>
-#> 1 01 [In an MSA of Less than 250,000]                         9.96
-#> 2 02 [In an MSA of 250,000 - 499,999]                        11.0 
-#> 3 03 [In an MSA of 500,000 - 999,999]                        10.0 
-#> 4 04 [In an MSA or CMSA of 1,000,000 - 2,999,999]             9.44
-#> 5 05 [In an MSA or CMSA of 3 million or more]                11.5 
-#> 6 06 [Not in MSA or CMSA]                                    11.3
+#> 1 01 [In an MSA of Less than 250,000]                         12.6
+#> 2 02 [In an MSA of 250,000 - 499,999]                         12.6
+#> 3 03 [In an MSA of 500,000 - 999,999]                         11.2
+#> 4 04 [In an MSA or CMSA of 1,000,000 - 2,999,999]             12.9
+#> 5 05 [In an MSA or CMSA of 3 million or more]                 12.5
+#> 6 06 [Not in MSA or CMSA]                                     15.3
 ```
 
 Additionally, the `strttime` and `endtime` fields on the trips data have
 been converted from four-character strings (e.g. `1310` for 1:10 PM)
 into R `datetime` objects. This required setting a date, which was
-arbitrarily chosen to be October 10, 2017.
+arbitrarily chosen to be an appropriate weekday in October 2017 or
+October 2022
 
 ``` r
 ggplot(nhts_trips, aes(x = strttime)) + 

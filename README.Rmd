@@ -12,18 +12,18 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-# nhts2017
+# nhtsr
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `nhts2017` is to make it considerably easier for R users to 
-interact with NHTS 2017 datasets. The package contains the four datasets:
+The goal of `nhtsr` is to make it considerably easier for R users to 
+interact with NHTS 2017 and 2022 datasets. The package contains eight datasets:
 
-  - `nhts_households`
-  - `nhts_persons`
-  - `nhts_vehicles`
-  - `nhts_trips`
+  - `nhts_households` and `nhts22_households`
+  - `nhts_persons` and `nhts22_persons`
+  - `nhts_vehicles` and `nhts22_vehicles`
+  - `nhts_trips` and `nhts22_trips`
   
 
 ### Citation: 
@@ -38,7 +38,7 @@ citation, such as when writing a research report, planning document, on-line
 article, and other publications. The citation can be formatted as follows:
 
 ```
-U.S. Department of Transportation, Federal Highway Administration, 2017
+U.S. Department of Transportation, Federal Highway Administration, 2022
 National Household Travel Survey. URL: http://nhts.ornl.gov.
 ```
 
@@ -63,7 +63,8 @@ For instance, to count the number of households completing records for each day,
 we can simply do
 
 ```{r example}
-library(nhts2017)
+library(nhtsr)
+library(haven)
 library(tidyverse)
 
 nhts_households %>%
@@ -82,9 +83,9 @@ is only appended to the `nhts_households` tibble rather than to all four tibbles
 Joining is trivial, however.
 
 ```{r joinexample}
-nhts_trips %>%
-  left_join(nhts_households, by = "houseid") %>%
-  group_by(msasize) %>%
+nhts22_trips |> 
+  left_join(nhts22_households, by = "houseid") |> 
+  group_by(msasize) |> 
   summarise(
     mean_trip_length = weighted.mean(trpmiles, wttrdfin)
   )
@@ -92,8 +93,8 @@ nhts_trips %>%
 
 Additionally, the `strttime` and `endtime` fields on the trips data have been
 converted from four-character strings (e.g. `1310` for 1:10 PM) into R `datetime`
-objects. This required setting a date, which was arbitrarily chosen to be October
-10, 2017.
+objects. This required setting a date, which was arbitrarily chosen to be an appropriate
+weekday in October 2017 or October 2022
 
 ```{r strttime}
 ggplot(nhts_trips, aes(x = strttime)) + 
